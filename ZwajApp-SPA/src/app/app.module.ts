@@ -3,6 +3,8 @@ import { NgModule } from '@angular/core';
 import {HttpClientModule  } from '@angular/common/http';
 //نضيف ال FormsModule
 import {FormsModule} from "@angular/forms";
+//ngx Bootstrab
+import { BsDropdownModule } from 'ngx-bootstrap';
 
 import { AppComponent } from './app.component';
 //import { ValueComponent } from './value/value.component';
@@ -15,6 +17,8 @@ import { RegisterComponent } from './register/register.component';
 
 //عشان نستخدمه فى ال providor
 import { ErrorInterceptorProvider } from './_services/error.interceptor';
+//import Alertify
+import { AlertifyService } from './_services/alertify.service';
 
 @NgModule({
    declarations: [
@@ -28,13 +32,15 @@ import { ErrorInterceptorProvider } from './_services/error.interceptor';
       BrowserModule,
       HttpClientModule,
       //ونعملهاimport\\n
-      FormsModule
+      FormsModule,
+      BsDropdownModule.forRoot()
    ],
    // نضيف ال AuthService
    //كده جاهز استخدامها
    providers: [
       AuthService,
-      ErrorInterceptorProvider
+      ErrorInterceptorProvider,
+      AlertifyService
    ],
    bootstrap: [
       AppComponent

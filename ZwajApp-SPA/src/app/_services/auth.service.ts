@@ -5,14 +5,24 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import{map} from "rxjs/operators";
 
+import {JwtHelperService} from '@auth0/angular-jwt';
+
+
 // لن يتم استخدام ال services اللا لما نعمل تصريح داخل ال app.module.ts ال root 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
+
+jwtHelper =new JwtHelperService();
+
 //ال link اللى هربط معاه : ال Domain
 baseUrl='http://localhost:49934/api/Auth/';
+
+
+//هنعمل متغير يحمل القيمه المشفره اللى احنا هنجبها من ال JWT Helper Service
+decodedToken:any;
 
 //http:HttpClient اللى بتمكنى من اننى اربط مع ال Client
 constructor(private http:HttpClient) { }
@@ -51,7 +61,11 @@ login(model:any){
 
       //عايز اخزن ال obj اللى داخل ال token
       //user.token بدخل داخل ال token واخد ال obj
-      if(user){localStorage.setItem('token',user.token);}}))
+      if(user){localStorage.setItem('token',user.token);
+    this.decodedToken=this.jwtHelper.decodeToken(user.token);
+    console.log(this.decodedToken);
+  }
+  }))
 
     }
 
@@ -59,5 +73,19 @@ login(model:any){
     register(model:any){
 
       return this.http.post(this.baseUrl+'register',model);
+    }
+
+    LoggedIn(){
+      try{
+
+      
+      const token=localStorage.getItem('token');
+      //لو مش Expired يبعته
+      return ! this.jwtHelper.isTokenExpired(token)
+    }
+    catch{
+      return false
+
+    }
     }
 }

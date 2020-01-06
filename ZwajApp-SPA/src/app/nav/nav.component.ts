@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 //AutoImport
 import { AuthService } from '../_services/auth.service';
+import { AlertifyService } from '../_services/alertify.service';
 
 @Component({
   //بيمثل ال selector اللى بيستخدم ك tag داخل ال appcommponent
@@ -20,7 +21,9 @@ export class NavComponent implements OnInit {
   //والاضافه اللى هتم هتم فى ال html
 
   //كده انا عملت injection لل AuthService
-  constructor(private authService:AuthService) { }
+
+  //لازم اضيف ال alertify داخل ال constructor
+  constructor(public authService:AuthService, private alertify:AlertifyService) { }
 
   ngOnInit() {
   }
@@ -33,11 +36,12 @@ export class NavComponent implements OnInit {
     //ال subscribe بتنفذ 3 حاجات 
     //فى حاله النجاح - فى حاله الايرور - فى حاله الانتهاء من المهمه
     this.authService.login(this.model).subscribe(
-      next=>{console.log('تم الدخول بنجاح')},
+      //next=>{console.log('تم الدخول بنجاح')},
+      next=>{ this.alertify.success('تم الدخول بنجاح')},
 
       //error=>{console.log('فشل فى الدخول')}
-
-      error=>{console.log(error)}
+      //error=>{console.log(error)}
+      error=>{this.alertify.error(error)}
 
       //complete=>{console.log(' ')}
       
@@ -52,10 +56,17 @@ export class NavComponent implements OnInit {
 //اذا كان ليس هناك token  فيظهر ال form ولا يظهر مرحبا بك
 
 //return boolean
+//دى الداله اللى بستخدمها عشان اشوف فى token ولا لا
+//واذا كان الشخص عمل loggedin ولا لا
+//وانا عايز استخدمها عموما
+//مش من صلاحيات اى component انى اعمل inject داخل component تانى
+//الحل عن طريق ال services 
 loggedIn(){
-   const token=localStorage.getItem('token');
-   //!! معناها لو ال token موجود يرجع ب true لو مش موجود يرجع ب false
-   return !! token
+  //  const token=localStorage.getItem('token');
+  //  //!! معناها لو ال token موجود يرجع ب true لو مش موجود يرجع ب false
+  //  return !! token
+
+  return this.authService.LoggedIn();
   }
 
 //method تانيه خاصه الخروج
@@ -63,7 +74,8 @@ loggedIn(){
 // افضى ال localStorage
 loggedOut(){
   localStorage.removeItem('token');
-  console.log('تم الخروج');
+  //console.log('تم الخروج');
+  this.alertify.message('تم الخروج');
 
 }
 

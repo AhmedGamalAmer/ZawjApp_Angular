@@ -1,9 +1,9 @@
-<nav class="rtl navbar navbar-expand-md navbar-dark bg-dark">
+<nav class="rtl navbar navbar-expand-md navbar-dark bg-primary">
   <a style="margin-top:-10px;color:pink;
 font-family:ToyorAljanah;font-size:2.25rem;font-weight:bolder" class="navbar-brand"
     href="#"><i class="fa fa-heart" aria-hidden="true"></i>زواج<i class="fa fa-heart" aria-hidden="true"></i></a>
 
-  <ul style="letter-spacing:1px;font-weight:bold;font-family:'JF Flat';font-size:1.2rem" class="navbar-nav mr-auto">
+  <ul *ngIf="loggedIn()" style="letter-spacing:1px;font-weight:bold;font-family:'JF Flat';font-size:1.2rem" class="navbar-nav mr-auto">
     <li class="nav-item">
       <a class="nav-link" href="#">الرئيسية </a>
     </li>
@@ -17,28 +17,31 @@ font-family:ToyorAljanah;font-size:2.25rem;font-weight:bolder" class="navbar-bra
       <a class="nav-link" href="#">دردشة</a>
     </li>
     <!-- 41-04-06 -->
-    <li class="nav-item">
+    <!-- <li class="nav-item"> -->
       <!-- بعد ما اضغط على خروج ينفذ ال loggedOut -->
       <!-- وكلمه خروج لاتظهر اللا بعد ال loggedIn = true -->
-      <a class="nav-link" *ngIf="loggedIn()" (click)="loggedOut()">خروج</a>
-    </li>
+      <!-- <a class="nav-link" *ngIf="loggedIn()" (click)="loggedOut()">خروج</a>
+    </li> -->
   </ul>
 
 
   <!-- 41-04-06 -->
-  <div class="dropdown">
+  <div *ngIf="loggedIn()" dropdown class="dropdown">
     <!-- ngf Structure Directive ngIf ngfor ngswitch بتعمل تغيير فى ال dom(domain object model) الخاص بصفحه ال html-->
     <!-- *ngIf take true ofr false = like loggedIn -->
-    <a *ngIf="loggedIn()" class="dropdown-toggle text-light nav-link" style="letter-spacing:1px;font-weight:bold;font-family:'JF Flat';font-size:1.2rem" >
+    <a dropdownToggle   class="dropdown-toggle text-light nav-link" style="letter-spacing:1px;font-weight:bold;font-family:'JF Flat';font-size:1.2rem" >
       مرحبا بك
+      <!-- ال ts file بيتحول الى java script لان كل ال browsers مبتفهمش ال ts-->
+      <!-- ال authService private هنحولها الى public -->
+      {{authService.decodedToken?.unique_name | titlecase}}
     </a>
   
-    <div class="dropdown-menu" >
-      <a class="dropdown-item" ><i class="fa fa4-user-o" aria-hidden="true"></i>
-        الملف الشخصى</a>
+    <div *dropdownMenu class="dropdown-menu mt-3" >
+      <a class="dropdown-item" ><i class="fa fa-user" aria-hidden="true"></i>
+        ملفى الشخصى</a>
 
       <div class="dropdown-divider"></div>
-      <a class="dropdown-item" ><i class="fa fa-sign-out"></i>
+      <a  (click)="loggedOut()" class="dropdown-item" ><i class="fa fa-sign-out"></i>
         تسجيل الخروج</a>
     </div>
   </div>
@@ -52,7 +55,7 @@ font-family:ToyorAljanah;font-size:2.25rem;font-weight:bolder" class="navbar-bra
 
   <!-- فى حاله الدخول اخفى ال form -->
   <!-- عايز لو ال token موجود ال Login form تختفى *ngIf="!loggedIn()" -->
-  <form *ngIf="!loggedIn()" (ngSubmit)="login()" #loginForm="ngForm" class="form-inline my-2 my-lg-0">
+  <form *ngIf="!loggedIn()" (ngSubmit)="login()" #loginForm="ngForm" class="ml-5 form-inline my-2 my-lg-0">
     <!-- عايز اربط ال input ده الخاص بأسم المشترك مع ال model اللى فى ال nav.component.ts-->
     <!-- [(ngModel)]="model" اللى جاى من nav.component.ts -->
     <!-- ال Angular بيفهم ال validation اللى فى ال Html -->
