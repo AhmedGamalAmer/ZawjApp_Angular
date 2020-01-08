@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 //AutoImport
 import { AuthService } from '../_services/auth.service';
 import { AlertifyService } from '../_services/alertify.service';
+import { Router } from '@angular/router';
 
 @Component({
   //بيمثل ال selector اللى بيستخدم ك tag داخل ال appcommponent
@@ -23,7 +24,9 @@ export class NavComponent implements OnInit {
   //كده انا عملت injection لل AuthService
 
   //لازم اضيف ال alertify داخل ال constructor
-  constructor(public authService:AuthService, private alertify:AlertifyService) { }
+
+  //المتغير router من نوع Router المسؤل عن التنقل بين الصفحات
+  constructor(public authService:AuthService, private alertify:AlertifyService,private router:Router) { }
 
   ngOnInit() {
   }
@@ -36,14 +39,17 @@ export class NavComponent implements OnInit {
     //ال subscribe بتنفذ 3 حاجات 
     //فى حاله النجاح - فى حاله الايرور - فى حاله الانتهاء من المهمه
     this.authService.login(this.model).subscribe(
+      //بتاخد 3 حاجات next - error - complete 
       //next=>{console.log('تم الدخول بنجاح')},
       next=>{ this.alertify.success('تم الدخول بنجاح')},
 
       //error=>{console.log('فشل فى الدخول')}
       //error=>{console.log(error)}
-      error=>{this.alertify.error(error)}
+      error=>{this.alertify.error(error)},
 
       //complete=>{console.log(' ')}
+      //complete بعد مايعمل loggedin يروح على ال members
+      ()=>{this.router.navigate(['/members']);}
       
     )
   }
@@ -77,6 +83,8 @@ loggedOut(){
   //console.log('تم الخروج');
   this.alertify.message('تم الخروج');
 
+  //عشان يروح لل home بعد مايعمل loggedOut
+  this.router.navigate(['home']);
 }
 
 //------------------------------------------
